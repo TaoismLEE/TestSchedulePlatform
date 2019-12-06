@@ -10,7 +10,7 @@ from dateutil.parser import parse
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@10.2.70.176:3306/tsp"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://haishu:Hlw..2019@192.168.32.135:3306/tsp"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JSON_AS_ASCII"] = False
 
@@ -398,7 +398,7 @@ def busi_func(task_id):
     login_method = ''
     login_parameter = ''
     request_cookie = '{}'
-    dbc = pymysql.connect(host="10.2.70.176", user="root", passwd="123456", db="tsp")
+    dbc = pymysql.connect(host="192.168.32.135", user="haishu", passwd="Hlw..2019", db="tsp")
     cur = dbc.cursor()
     start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     sql_r = "update tasks set STATUS='" + str(3) + "'" + " WHERE ID=" + task_id
