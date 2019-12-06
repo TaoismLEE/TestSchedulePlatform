@@ -1,0 +1,53 @@
+.hiddenElement {
+    display: none;
+}
+
+.invisibleElement {
+    visibility: hidden;
+}
+
+.redStar {
+    margin-left: 3px;
+    color: red;
+}
+
+.redFont {
+    color: red;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.greenFont {
+    color: green;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.orangeFont {
+    color: orange;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.bootbox .modal-body {
+    padding: 0px;
+}
+
+.bootbox .bootbox-body>div {
+    margin-bottom: 0px;
+}
+
+.bg-color-green {
+    background-color: green;
+    color: white;
+}
+
+.bg-color-orange {
+    background-color: orangered;
+    color: white;
+}
+
+.bg-color-red {
+    background-color: red;
+    color: white;
+}

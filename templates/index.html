@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signin.css') }}" />
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}
+
+{% block  title %}
+Sign In
+{% endblock %}
+
+{% block body %}
+<form class="form-signin">
+    <img class="mb-4" src="{{ url_for('static', filename='pics/logo.jpg') }}" alt="logo" width="85" height="85">
+    <h1 class="h3 mb-３ font-weight-normal">Please sign in</h1>
+    <label for="inputUserName" class="sr-only">User name</label>
+    <input type="text" id="inputUserName" class="form-control" placeholder="User name" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <div class="checkbox mb-3">
+    <label>
+        <input type="checkbox" value="remember-me"> Remember me
+    </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="button" id="signIn">Sign in</button>
+    <button class="btn btn-lg btn-primary btn-block" type="button" id="signUp">Sign up</button>
+</form>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel"></h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+          <label for="txt_user_name">User Name<span class="redStar">*</span></label>
+          <input type="text" name="txt_username" class="form-control" id="txt_user_name" placeholder="User name" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="password">Password<span class="redStar">*</span></label>
+            <input type="password" name="ps_password" class="form-control" id="password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <label for="txt_qq">QQ</label>
+            <input type="text" name="txt_qq_number" class="form-control" id="txt_qq" placeholder="QQ">
+        </div>
+        <div class="form-group">
+            <label for="txt_MSN">MSN</label>
+            <input type="text" name="txt_MSN_number" class="form-control" id="txt_MSN" placeholder="MSN">
+        </div>
+        <div class="form-group">
+            <label for="txt_phone">Phone</label>
+            <input type="text" name="txt_phone_num" class="form-control" id="txt_phone" placeholder="Phone">
+        </div>
+        <div class="form-group">
+            <label for="txt_mail">Mail</label>
+            <input type="email" name="txt_email" class="form-control" id="txt_mail" placeholder="E-mail">
+        </div>
+        <!-- <div class="form-group">
+            <label for="innerForm">Photo</label>
+            <div class="input-group mb-3 form-group" id="innerForm">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile02">
+                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                </div>
+                <div class="input-group-append">
+                    <span class="input-group-text" id="inputGroupFileAddon02">Upload</span>
+                </div>
+            </div>
+        </div> -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Close</button>
+        <button type="button" id="btn_submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
+    </div>
+    </div>
+    </div>
+ </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/his_report.css') }}" />
+    <script src="{{ url_for('static', filename='js/his_report.js') }}"></script>
+{% endblock %}
+
+{% block  title %}
+Task Report
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-dark justify-content-center">
+    <span class="navbar-brand" id="interfaceHeader"><span class="invisibleElement" id="tmpTaskID">{{ task_id }}</span>Report Monitor</span>
+</nav>
+<form class="form-inline">
+<!--
+<input class="form-control input-small" id="filterData" type="text" placeholder="BatchTime/URL" class="mr-1"/>
+<select class="form-control" id="resultStatus">
+    <option value="">Please select</option>
+    <option value="pass">Pass</option>
+    <option value="fail">Fail</option>
+    <option value="skip">Skip</option>
+</select> -->
+<button type="button" class="btn btn-primary my-2 hiddenElement" id="hisSearch">Search</button>
+<button type="button" class="btn btn-primary my-2 hiddenElement" id="hisDelete">Delete</button>
+</form>
+
+<div class="album bg-light">
+<div class="tbContainer">
+    <table class="table table-bordered table-hover table-sm">
+    <thead class="thead-light">
+        <tr>
+        <th><input type="checkbox" id="total-check" /></th>
+        <th scope="col">BatchTime</th>
+        <th scope="col">Method</th>
+        <th scope="col">URL</th>
+        <th scope="col">Parameters</th>
+        <th scope="col">CheckRegExp</th>
+        <th scope="col">Result</th>
+        <th scope="col">Project</th>
+        <th scope="col">ExecuteTime</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set ns = namespace(counter=0) %}
+        {% for history in histories %}
+            <tr>
+                <td><input type="checkbox" rowindex={{ ns.counter }} /></td>
+                <td>{{ history["BATCH_ID"] }}</td>
+                <td class="method">{{ history["METHODS"] }}</td>
+                <td class="url">{{ history["URL"] }}</td>
+                <td class="parameter">{{ history["PARAMETERS"] }}</td>
+                <td>{{ history["CHECK_REGEXP"] }}</td>
+                <td class="result">{{ history["CHECK_RESULT"] }}</td>
+                <td>{{ project["PROJECT_NAME"] }}</td>
+                <td>{{ history["EXECUTE_TIME"] }}</td>
+            </tr>
+            {% set ns.counter = ns.counter + 1 %}
+        {% endfor %}
+    </tbody>
+    </table>
+    {%import 'pages.html' as pg%}
+    {{pg.my_paginate(pagination, task_id ,'his_report')}}
+</div>
+</div>
+{% endblock %}

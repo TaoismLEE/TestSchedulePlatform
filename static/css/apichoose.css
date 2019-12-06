@@ -1,0 +1,44 @@
+#configHeader {
+    text-align: center;
+    color: white;
+    font-size: x-large;
+}
+
+#saveConfig {
+    margin-bottom: 3px;
+}
+
+.container-fluid {
+    margin-top: 25px;
+    margin-right: 0.5rem;
+    margin-left: 15px;
+    width: 98%;
+}
+
+p {
+    margin-bottom: 3px;
+}
+
+.col-4.header, .col-7.header {
+    padding-left: 0px;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    font-size: large;
+}
+
+.col-7.content {
+    border-color: #007bff;
+    border-left-style: solid;
+    border-width: thin;
+    height: 80vh;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.col-4.content {
+    border-color: #007bff;
+    border-right-style: solid;
+    border-width: thin;
+    height: 80vh;
+    padding-left: 0px;
+    padding-right: 0px;
+}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/task.css') }}" />
+    <script src="{{ url_for('static', filename='js/task.js') }}"></script>
+{% endblock %}
+
+{% block  title %}
+Task Scheduler
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-dark justify-content-center">
+    <span class="navbar-brand" id="interfaceHeader"><span class="invisibleElement" id="tmpProjectID">{{ project.ID }}</span>{{ project.PROJECT_NAME }} - Task Schedule</span>
+</nav>
+<form class="form-inline">
+<input class="form-control input-small" id="taskName" type="text" placeholder="Task Name" class="mr-1"/>
+<button type="button" class="btn btn-primary my-2" id="taskSearch">Search</button>
+<button type="button" class="btn btn-primary my-2" id="taskCreate">Create</button>
+<button type="button" class="btn btn-primary my-2" id="taskEdit">Edit</button>
+<button type="button" class="btn btn-primary my-2" id="taskDelete">Delete</button>
+</form>
+
+<div class="album bg-light">
+<div class="tbContainer">
+    <table class="table table-bordered table-hover table-sm">
+    <thead class="thead-light">
+        <tr>
+        <th><input type="checkbox" id="total-check" /></th>
+        <th scope="col">TaskID</th>
+        <th scope="col">TaskName</th>
+        <th scope="col">CronExp</th>
+        <th scope="col">CreateTime</th>
+        <th scope="col">Status</th>
+        <th scope="col">StartTime</th>
+        <th scope="col">Endime</th>
+        <th scope="col">ExecuteTime</th>
+        <th scope="col" width="20%">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set ns = namespace(counter=0) %}
+        {% for task in tasks %}
+            <tr>
+                <td><input type="checkbox" rowindex={{ ns.counter }} /></td>
+                <td>{{ task["ID"] }}</td>
+                <td>{{ task["TASK_NAME"] }}</td>
+                <td>{{ task["CRON_EXP"] }}</td>
+                <td>{{ task["CREATE_TIME"] }}</td>
+                <td>
+                    {% if task["STATUS"] == "1" %}
+                        New
+                    {% elif task["STATUS"] == "2" %}
+                        Scheduled
+                    {% elif task["STATUS"] == "3" %}
+                        Running
+                    {% elif task["STATUS"] == "4" %}
+                        Off scheduled
+                    {% else %}
+                        Not Defined
+                    {% endif %}
+                </td>
+                <td>
+                    {% if task["START_TIME"] %}
+                        {{ task["START_TIME"] }}
+                    {% else %}
+                        --
+                    {% endif %}
+                </td>
+                <td>
+                    {% if task["END_TIME"] %}
+                        {{ task["END_TIME"] }}
+                    {% else %}
+                        --
+                    {% endif %}
+                </td>
+                <td>
+                    {% if task["EXECUTE_TIME"] %}
+                        {{ task["EXECUTE_TIME"] }}
+                    {% else %}
+                        --
+                    {% endif %}
+                    </td>
+                <td>
+                    <a href="{{ url_for('config_apis', task_id=task['ID']) }}" class="btn btn-sm btn-primary" role="button" target="_blank">Choose APIs</a>
+                    <!-- <button class="btn btn-primary btn-sm" name="runSchedule" type="button">Run Once</button> -->
+                    <button class="btn btn-primary btn-sm" name="scheduleTask" type="button">On</button>
+                    <button class="btn btn-primary btn-sm" name="cancelTask" type="button">Off</button>
+                    <a href="{{ url_for('his_report', task_id=task['ID'], page_num=1) }}" class="btn btn-sm btn-primary" role="button" target="_blank">Report</a>
+                </td>
+            </tr>
+            {% set ns.counter = ns.counter + 1 %}
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal-dialog" role="document">
+ <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel"></h4>
+    </div>
+     <div class="modal-body">
+        <div class="form-group">
+            <label for="txt_task_name">Task Name<span class="redStar">*</span></label>
+            <input type="text" name="txt_taskName" class="form-control" id="txt_task_name" placeholder="Task name">
+        </div>
+        <div class="form-group">
+            <label for="selector">Cron RegExp<span class="redStar">*</span></label>
+            <!-- <input type="text" name="txt_cronexp" class="form-control" id="cron-picker" placeholder="Cron RegExp"> -->
+            <div id="selector"></div>
+        </div>
+         <div class="form-group">
+            <input type="text" name="txt_cronValue" class="form-control" id="cronValue" placeholder="Cron value">
+        </div>
+        <!--<div class="form-group">
+        <label for="pic_logo">Logo</label>
+        <input type="text" name="pic_img" class="form-control" id="pic_logo" placeholder="Logo">
+        </div> -->
+     </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Close</button>
+        <button type="button" id="btn_submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
+    </div>
+ </div>
+ </div>
+ </div>
+{% endblock %}

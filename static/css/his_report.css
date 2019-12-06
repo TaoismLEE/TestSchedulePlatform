@@ -1,0 +1,70 @@
+.jumbotron {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  margin-bottom: 0;
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron-heading {
+  font-weight: 300;
+}
+
+.jumbotron .container {
+  max-width: 40rem;
+}
+
+#interfaceHeader {
+    text-align: center;
+    color: white;
+    font-size: x-large;
+}
+
+form {
+  margin-top: 2rem;
+}
+
+form button {
+  margin-left: 0.3rem;
+}
+
+form input {
+  margin-left: 0.5rem;
+}
+
+div.album {
+  padding-top: 0.5rem;
+  padding-bottom: 3rem;
+  min-height: 84vh;
+}
+
+div.tbContainer {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  text-align: center;
+}
+
+th, td {
+  text-align: center;
+}
+
+nav {
+  display: inline-block;
+}
+
+.parameter, .url {
+  text-align: left;
+}
+
+select {
+  margin-left: 5px;
+}

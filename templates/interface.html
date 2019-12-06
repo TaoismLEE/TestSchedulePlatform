@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/interface.css')}}" />
+    <script src="{{ url_for('static', filename='js/interface.js')}}"></script>
+{% endblock %}
+
+{% block  title %}
+Interface Test
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-dark justify-content-center">
+    <span class="navbar-brand" id="interfaceHeader"><span class="invisibleElement" id="tmpProjectID">{{ project.ID }}</span>{{ project.PROJECT_NAME }} - Interface Executor</span>
+</nav>
+
+<div class="container-fluid lefHis">
+    <div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Filter" aria-label="Recipient's username" aria-describedby="button-addon2" id="filterData">
+          <div class="input-group-append">
+            <button class="btn btn-primary btn-md" type="button" id="button-addon2">Search</button>
+          </div>
+        </div>
+    </div>
+    <div id="hisTitle">
+        <span>History</span>
+    </div>
+    <div class="container-fluid" id="hisLine">
+    </div>
+    <div class="container-fluid" id="hisContent">
+    <table class="table">
+        <tbody>
+            {% import 'interface_his.html' as templater %}
+            {% for history in histories %}
+                {{ templater.manual_his(project, history) }}
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<div class="container-fluid rigExec">
+    <div class="form-row justify-content-between">
+    <div class="col-1">
+        <select class="form-control" id="methods">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+        </select>
+    </div>
+    <div class="col-10">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">{{ project.PROJECT_URL }}</span>
+          </div>
+          <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+        </div>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary btn-md" type="button" id="sendRequest">Send</button>
+    </div>
+    </div>
+
+    <div class="form-group">
+        <label for="sendParameters">Input parameters in JSON format</label>
+        <textarea class="form-control" id="sendParameters" rows="3" placeholder='eg.{"account":"admin", "password":123456}'></textarea>
+     </div>
+
+    <div class="form-row justify-content-between">
+        <div class="col">
+            <div class="form-group">
+                <label for="returnedData">API return</label>
+                <textarea class="form-control" id="returnedData"></textarea>
+             </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="inputRxp">Please input RegExp</label>
+                <textarea class="form-control" id="inputRxp" rows="1"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-md float-right" type="button" id="Validate">Validate RegExp</button>
+            </div>
+            <div id="resultBlock">Check Result:&nbsp;<span id="checkResult"></span></div>
+        </div>
+    </div>
+</div>
+<div class="clearFloat"></div>
+
+{% endblock %}

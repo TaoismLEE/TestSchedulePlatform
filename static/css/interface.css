@@ -1,0 +1,83 @@
+.input-small {
+    display: inline;
+    width: 250px;
+}
+
+.btn-primary {
+    margin-bottom: 4.5px;
+}
+
+#interfaceHeader {
+    text-align: center;
+    color: white;
+    font-size: x-large;
+}
+
+.lefHis {
+    margin-top: 0.45rem;
+    padding-top: 0.75rem;
+    float: left;
+    width: 15%;
+    border-right-style: solid;
+    border-right-color: #007bff;
+    border-width: thin;
+    min-height: 93.5vh;
+    box-shadow: #007bff 3px -1px 3px -1px;
+}
+
+#hisTitle {
+    font-size: 18px;
+    font-family: inherit;
+}
+ #hisLine {
+    border-top-color: #007bff;
+    border-width: thin;
+    border-top-style: solid;
+    box-shadow: #007bff 0 0px 1px 0px;
+    margin-bottom: 0.5rem;
+ }
+
+.rigExec {
+    margin-top: 0.45rem;
+    padding-top: 0.45rem;
+    float: left;
+    width: 84%;
+}
+
+#returnedData {
+    min-height: 67vh;
+}
+
+.clearFloat {
+    clear: both;
+}
+
+
+.pro_method {
+    color: orange;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.pro_url {
+    font-size: x-small;
+    background-color: #f5f5f5;
+    word-break: break-word;
+}
+
+#hisContent {
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.table td {
+    padding: 0.35rem;
+}
+
+#resultBlock {
+    margin-top: 4rem;
+}
+
+.tr-active {
+    background-color: khaki;
+}

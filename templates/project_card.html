@@ -1,0 +1,21 @@
+{% macro project_card(project) %}
+<div class="col-md-4">
+  <div class="card mb-4 shadow-sm">
+    <img src="{{ url_for('static', filename='pics/temp.jpg') }}" width="100%" height="225" background="#55595c" color="#eceeef" class="card-img-top" text="Thumbnail" />
+    <div class="card-body">
+      <h4>{{ project.PROJECT_NAME }}</h4>
+      <p class="card-text">{{ project.DESCRIPTION }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Delete</button>
+        </div>
+        <small class="text-muted">
+            <a href="{{ url_for('interface', project_id=project.ID) }}" class="btn btn-sm btn-primary" type="button" target="_blank">Manual</a>
+            <a href="{{ url_for('tasks', project_id=project.ID) }}" class="btn btn-sm btn-primary" type="button" target="_blank">Batch</a>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
