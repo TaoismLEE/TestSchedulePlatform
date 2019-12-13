@@ -2,6 +2,7 @@ from module.modules import db, User, and_, Project, Interface, InterfaceLog, Tas
 from flask import Flask, request, render_template, jsonify, redirect, url_for, json, current_app
 from flask_script import Manager
 from flask_apscheduler import APScheduler
+from flask_mail import Message, Mail
 import requests
 import re
 import time
@@ -13,12 +14,17 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@10.2.70.176:3306/tsp"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JSON_AS_ASCII"] = False
+app.config['MAIL_SERVER'] = 'smtp.exmail.qq.com'
+app.config['MAIL_PORT'] = 25
+app.config['MAIL_USERNAME'] = 'yu.li@hualongdata.com'
+app.config['MAIL_PASSWORD'] = '2UCdZ79NgobbYTqe'
 
 db.init_app(app)
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
+mail = Mail(app)
 manager = Manager(app)
 
 
@@ -394,6 +400,7 @@ def schedule_task():
 
 
 def busi_func(task_id):
+    send_email_flag = None
     login_url = ''
     login_method = ''
     login_parameter = ''
@@ -443,7 +450,7 @@ def busi_func(task_id):
         check_exp = api[4]
         login_flag = api[8]
         loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie, login_method, login_url, login_parameter, batch_time, cur, project_id, task_id)
-    time.sleep(10)
+    time.sleep(5)
     current_status = "select STATUS from tasks where ID=" + task_id
     dbc.commit()
     cur.execute(current_status)
@@ -460,6 +467,28 @@ def busi_func(task_id):
     cur.execute(sqle)
     cur.execute(sqlt)
     dbc.commit()
+
+    # check execution result to send email
+    sql_result = "select * from batches_his where BATCH_ID='" + str(batch_time) + "'"
+    cur.execute(sql_result)
+    result_rows = cur.fetchall()
+    dbc.commit()
+    for item in result_rows:
+        if item[7] == 'Fail':
+            send_email_flag = 1
+    # trigger to send email if send_email_flag equals 1
+    if send_email_flag:
+        project_url_sql = "select * from projects where ID=" + str(project_id)
+        cur.execute(project_url_sql)
+        row = cur.fetchone()
+        with app.app_context():
+            send_email(row[2] + " - API Test Report", 'email', result_rows, row)
+
+
+def send_email(subject, template, histories, project):
+    msg = Message(subject, sender='yu.li@hualongdata.com', recipients=['yu.li@hualongdata.com'])
+    msg.html = render_template(template + '.html', histories=histories, project=project)
+    mail.send(msg)
 
 
 def call_login_api(method, full_url, parameters, request_cookie):
