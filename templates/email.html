@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block  title %}
+Task Report
+{% endblock %}
+
+{% block body %}
+<div class="album bg-light">
+<div class="tbContainer">
+    <table class="table table-bordered table-hover table-sm" style="border: 1px solid black; border-collapse: collapse;">
+    <thead class="thead-light">
+        <tr style="border: 1px solid black; border-collapse: collapse;">
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">BatchTime</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">Method</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">URL</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">Parameters</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">CheckRegExp</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">Result</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">Project</th>
+        <th scope="col" style="border: 1px solid black; border-collapse: collapse;">ExecuteTime</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set ns = namespace(counter=0) %}
+        {% for history in histories %}
+            <tr style="border: 1px solid black; border-collapse: collapse;">
+                <td style="border: 1px solid black; border-collapse: collapse;">{{ history[1] }}</td>
+                <td class="method" style="border: 1px solid black; border-collapse: collapse;">{{ history[2] }}</td>
+                <td class="url" style="border: 1px solid black; border-collapse: collapse;">{{ history[3] }}</td>
+                <td class="parameter" style="border: 1px solid black; border-collapse: collapse;">{{ history[4] }}</td>
+                <td style="border: 1px solid black; border-collapse: collapse;">{{ history[6] }}</td>
+                {% if history[7] == 'Pass' %}
+                    <td class="result" style="border: 1px solid black; border-collapse: collapse; background-color: green; color: white;">{{ history[7] }}</td>
+                {% elif history[7] == 'Fail' %}
+                    <td class="result" style="border: 1px solid black; border-collapse: collapse; background-color: red; color: white;">{{ history[7] }}</td>
+                {% else %}
+                    <td class="result" style="border: 1px solid black; border-collapse: collapse; background-color: orange; color: white;">{{ history[7] }}</td>
+                {% endif %}
+                <td style="border: 1px solid black; border-collapse: collapse;">{{ project[2] }}</td>
+                <td style="border: 1px solid black; border-collapse: collapse;">{{ history[10] }}</td>
+            </tr>
+            {% set ns.counter = ns.counter + 1 %}
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}
