@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9e72372-c958-4836-8a12-6aa46fc372c1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/email.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/modules.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/interface.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/interface.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/interface.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/interface.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/his_report.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/his_report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/interface.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/interface.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/interface_his.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/interface_his.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,9 +36,9 @@
       <list>
         <option value="Flask Main" />
         <option value="CSS File" />
-        <option value="Python Script" />
         <option value="JavaScript File" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -126,9 +131,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Flask server.TestSchedulePlatform" />
       <item itemvalue="Flask server.Flask (app.py) (1)" />
       <item itemvalue="Flask server.Flask (app.py)" />
-      <item itemvalue="Flask server.TestSchedulePlatform" />
     </list>
     <recent_temporary>
       <list>
@@ -159,6 +164,13 @@
       <workItem from="1575628382879" duration="1542000" />
       <workItem from="1575877376693" duration="15699000" />
       <workItem from="1576204318942" duration="603000" />
+      <workItem from="1576220554543" duration="125000" />
+      <workItem from="1576232807787" duration="608000" />
+      <workItem from="1576632089419" duration="21281000" />
+      <workItem from="1576730637768" duration="6305000" />
+      <workItem from="1576751812704" duration="4905000" />
+      <workItem from="1576816356116" duration="3851000" />
+      <workItem from="1576828478855" duration="3337000" />
     </task>
     <servers />
   </component>
@@ -179,7 +191,7 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/TestSchedulePlatform$TestSchedulePlatform.coverage" NAME="TestSchedulePlatform Coverage Results" MODIFIED="1576027487368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TestSchedulePlatform$TestSchedulePlatform.coverage" NAME="TestSchedulePlatform Coverage Results" MODIFIED="1576828621972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TestSchedulePlatform$Flask__app_py___1_.coverage" NAME="Flask (app.py) (1) Coverage Results" MODIFIED="1574316594848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/TestSchedulePlatform$Flask__app_py_.coverage" NAME="Flask (app.py:runserver --host 10.2.69.25) Coverage Results" MODIFIED="1574316812059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>

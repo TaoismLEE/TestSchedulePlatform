@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 db = SQLAlchemy()
 
@@ -63,8 +63,9 @@ class Interface(db.Model):
     CHECK_RESULT = db.Column(db.Text)
     EXECUTE_TIME = db.Column(db.DateTime)
     BELONG_PROJECT = db.Column(db.Integer, db.ForeignKey("projects.ID"), nullable=False)
+    ALIAS = db.Column(db.String(255))
 
-    def __init__(self, methods, project_url, parameters, belong_project, response, current_time, check_regexp="", check_result=""):
+    def __init__(self, methods, project_url, parameters, belong_project, response, current_time, check_regexp="", check_result="", alias=""):
         self.METHODS = methods
         self.URL = project_url
         self.PARAMETERS = parameters
@@ -73,6 +74,7 @@ class Interface(db.Model):
         self.API_RETURN = response
         self.EXECUTE_TIME = current_time
         self.CHECK_RESULT = check_result
+        self.ALIAS =alias
 
 
 class InterfaceLog(db.Model):

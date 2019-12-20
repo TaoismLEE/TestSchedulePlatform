@@ -11,6 +11,12 @@ Interface Test
 {% endblock %}
 
 {% block body %}
+<div>
+    <ul class="list-group contextmenu">
+        <li id="del-interface" class="list-group-item">Delete</li>
+        <li id="sync-interface" class="list-group-item">Sync</li>
+    </ul>
+</div>
 <nav class="navbar navbar-light bg-dark justify-content-center">
     <span class="navbar-brand" id="interfaceHeader"><span class="invisibleElement" id="tmpProjectID">{{ project.ID }}</span>{{ project.PROJECT_NAME }} - Interface Executor</span>
 </nav>
@@ -49,13 +55,16 @@ Interface Test
             <option value="POST">POST</option>
         </select>
     </div>
-    <div class="col-10">
+    <div class="col-8">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon3">{{ project.PROJECT_URL }}</span>
           </div>
           <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
         </div>
+    </div>
+    <div class="col-2">
+        <input type="text" class="form-control" id="alias" aria-describedby="basic-addon3" placeholder="API Alias">
     </div>
     <div class="col-auto">
       <button class="btn btn-primary btn-md" type="button" id="sendRequest">Send</button>
