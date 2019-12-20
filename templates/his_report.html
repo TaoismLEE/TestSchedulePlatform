@@ -14,17 +14,42 @@ Task Report
 <nav class="navbar navbar-light bg-dark justify-content-center">
     <span class="navbar-brand" id="interfaceHeader"><span class="invisibleElement" id="tmpTaskID">{{ task_id }}</span>Report Monitor</span>
 </nav>
-<form class="form-inline">
-<!--
-<input class="form-control input-small" id="filterData" type="text" placeholder="BatchTime/URL" class="mr-1"/>
-<select class="form-control" id="resultStatus">
-    <option value="">Please select</option>
-    <option value="pass">Pass</option>
-    <option value="fail">Fail</option>
-    <option value="skip">Skip</option>
-</select> -->
-<button type="button" class="btn btn-primary my-2 hiddenElement" id="hisSearch">Search</button>
-<button type="button" class="btn btn-primary my-2 hiddenElement" id="hisDelete">Delete</button>
+<form class="form-inline" action="{{ url_for('his_report', task_id=task_id, page_num=1) }}" method="POST">
+<!-- <input name="task_id" type="text" value="{{ task_id }}" class="hiddenElement" /> -->
+    {% if query_data %}
+        <input class="form-control input-small" id="filterData" name="query_data" type="text" value="{{ query_data }}" class="mr-1"/>
+    {% else %}
+        <input class="form-control input-small" id="filterData" name="query_data" type="text" placeholder="BatchTime/URL" class="mr-1"/>
+    {% endif %}
+    {% if status %}
+        <select class="form-control" id="resultStatus" name="status">
+            <option value="">Please select</option>
+            {% if status == 'pass' %}
+                <option value="pass" selected>Pass</option>
+                <option value="fail">Fail</option>
+                <option value="skip">Skip</option>
+            {% endif %}
+            {% if status == 'fail' %}
+                <option value="pass">Pass</option>
+                <option value="fail" selected>Fail</option>
+                <option value="skip">Skip</option>
+            {% endif %}
+            {% if status == 'skip' %}
+                <option value="pass">Pass</option>
+                <option value="fail">Fail</option>
+                <option value="skip" selected>Skip</option>
+            {% endif %}
+        </select>
+    {% else %}
+        <select class="form-control" id="resultStatus" name="status">
+            <option value="" selected>Please select</option>
+            <option value="pass">Pass</option>
+            <option value="fail">Fail</option>
+            <option value="skip">Skip</option>
+        </select>
+    {% endif %}
+<button type="submit" class="btn btn-primary my-2" id="hisSearch">Search</button>
+<!-- <button type="button" class="btn btn-primary my-2 hiddenElement" id="hisDelete">Delete</button> -->
 </form>
 
 <div class="album bg-light">

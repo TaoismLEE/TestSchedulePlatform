@@ -1,6 +1,10 @@
 {% macro manual_his(project, history) %}
 <tr option="{{ history.ID }}">
-  <td class="pro_method">{{ history.METHODS }}</td>
-  <td class="pro_url">{{ project.PROJECT_URL }}{{ history.URL }}</td>
+    <td class="pro_method">{{ history.METHODS }}</td>
+    {% if history.ALIAS == "" %}
+        <td class="pro_url">{{ project.PROJECT_URL }}{{ history.URL }}</td>
+    {% else %}
+        <td class="pro_url">{{ project.PROJECT_URL }}{{ history.URL }}[{{ history.ALIAS }}]</td>
+    {% endif %}
 </tr>
 {% endmacro %}

@@ -1,5 +1,5 @@
-from module.modules import db, User, and_, Project, Interface, InterfaceLog, Task, Batch, BatchHis
-from flask import Flask, request, render_template, jsonify, redirect, url_for, json, current_app
+from module.modules import db, User, and_, Project, Interface, InterfaceLog, Task, Batch, BatchHis, or_
+from flask import Flask, request, render_template, jsonify, redirect, url_for, json, current_app, g
 from flask_script import Manager
 from flask_apscheduler import APScheduler
 from flask_mail import Message, Mail
@@ -8,6 +8,7 @@ import re
 import time
 import pymysql
 from dateutil.parser import parse
+from service.url_generate import url_generate
 
 
 app = Flask(__name__)
@@ -26,6 +27,11 @@ scheduler.start()
 
 mail = Mail(app)
 manager = Manager(app)
+
+
+class EnvVar:
+    cache_status = ""
+    cache_query_data = ""
 
 
 @app.route('/')
@@ -199,6 +205,7 @@ def interface_query():
             tmp["method"] = history.METHODS
             tmp["url"] = base_url + history.URL
             tmp["id"] = history.ID
+            tmp["alias"] = history.ALIAS
             histories.append(tmp)
     return jsonify({"data": histories, "status": 200}), 200
 
@@ -212,7 +219,17 @@ def interface_detail():
     inter_data["path"] = interface.URL
     inter_data["parameters"] = interface.PARAMETERS
     inter_data["regexp"] = interface.CHECK_REGEXP
+    inter_data["alias"] = interface.ALIAS
     return jsonify({"data": inter_data, "status": 200}), 200
+
+
+@app.route('/interface/delete', methods=['POST'])
+def interface_delete():
+    interface_id = request.form.get("interface_id")
+    interface = Interface.query.filter(Interface.ID == interface_id).first()
+    db.session.delete(interface)
+    db.session.commit()
+    return jsonify({"Message": "Delete interface successfully!", "status": 200}), 200
 
 
 @app.route("/api/query", methods=['GET', 'POST', 'UPDATE', 'DELETE'])
@@ -225,6 +242,7 @@ def query_apis():
     pattern = request.form.get("RegExp")
     method = request.form.get("methods")
     request_cookie = request.form.get("project_cookie")
+    Alias = request.form.get("Alias")
     if parameters:
         data_json = json.loads(parameters)
     full_url = url + path
@@ -238,7 +256,8 @@ def query_apis():
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
     elif method == "GET":
         if parameters:
-            response = requests.get(full_url, cookies=eval(request_cookie), params=parameters)
+            new_url = url_generate(full_url, eval(parameters))
+            response = requests.get(new_url, cookies=eval(request_cookie))
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
         else:
             response = requests.get(full_url, cookies=eval(request_cookie))
@@ -260,7 +279,7 @@ def query_apis():
             interface = Interface(methods=request.form.get("methods"), project_url=path, parameters=parameters,
                                   belong_project=belong_project, response=str(
                                       json.dumps(response.json(), sort_keys=True, indent=4, separators=(',', ':'))),
-                                  check_regexp=pattern, current_time=exe_time, check_result="Pass")
+                                  check_regexp=pattern, current_time=exe_time, check_result="Pass", alias=Alias)
             db.session.add(interface)
             db.session.commit()
             if cookies:
@@ -271,7 +290,7 @@ def query_apis():
             interface = Interface(methods=request.form.get("methods"), project_url=path, parameters=parameters,
                                   belong_project=belong_project, response=str(
                                       json.dumps(response.json(), sort_keys=True, indent=4, separators=(',', ':'))),
-                                  check_regexp=pattern, current_time=exe_time, check_result="Fail")
+                                  check_regexp=pattern, current_time=exe_time, check_result="Fail", alias=Alias)
             db.session.add(interface)
             db.session.commit()
             if cookies:
@@ -282,7 +301,7 @@ def query_apis():
         interface = Interface(methods=request.form.get("methods"), project_url=path, parameters=parameters,
                               belong_project=belong_project, response=str(
                                   json.dumps(response.json(), sort_keys=True, indent=4, separators=(',', ':'))),
-                              check_regexp=pattern, current_time=exe_time)
+                              check_regexp=pattern, current_time=exe_time, alias=Alias)
         db.session.add(interface)
         db.session.commit()
         if cookies:
@@ -578,11 +597,27 @@ def config_apis(task_id):
 def his_report(task_id, page_num=None):
     if not page_num:
         page_num = 1
-    task = Task.query.filter(Task.ID == task_id).first()
-    project_id = task.BELONG_PROJECT
-    project = Project.query.get(project_id)
-    histories = BatchHis.query.filter_by(BELONG_TASK=task_id).order_by(BatchHis.EXECUTE_TIME.desc()).paginate(page=page_num, per_page=20)
-    return render_template("his_report.html", histories=histories.items, pagination=histories, task_id=task_id, project=project)
+    if request.method == 'GET':
+        task_id = task_id
+        task = Task.query.filter(Task.ID == task_id).first()
+        project_id = task.BELONG_PROJECT
+        project = Project.query.get(project_id)
+        status = EnvVar.cache_status
+        query_data = EnvVar.cache_query_data
+        histories = BatchHis.query.filter(and_(BatchHis.CHECK_RESULT.like('%' + status + '%'), or_(BatchHis.URL.like('%' + query_data + '%'), BatchHis.BATCH_ID.like('%' + query_data + '%')), BatchHis.BELONG_TASK==task_id)).order_by(BatchHis.EXECUTE_TIME.desc()).paginate(page=page_num, per_page=20)
+        return render_template("his_report.html", histories=histories.items, pagination=histories, task_id=task_id, project=project, status=status, query_data=query_data)
+
+    else:
+        task_id = task_id
+        status = request.form.get('status')
+        EnvVar.cache_status = status
+        query_data = request.form.get('query_data')
+        EnvVar.cache_query_data = query_data
+        task = Task.query.filter(Task.ID == task_id).first()
+        project_id = task.BELONG_PROJECT
+        project = Project.query.get(project_id)
+        histories = BatchHis.query.filter(and_(BatchHis.CHECK_RESULT.like('%' + status + '%'), or_(BatchHis.URL.like('%' + query_data + '%'), BatchHis.BATCH_ID.like('%' + query_data + '%')), BatchHis.BELONG_TASK==task_id)).order_by(BatchHis.EXECUTE_TIME.desc()).paginate(page=page_num, per_page=20)
+        return render_template("his_report.html", histories=histories.items, pagination=histories, task_id=task_id, project=project, status=status, query_data=query_data)
 
 
 @app.route('/move/right', methods=["POST"])

@@ -81,3 +81,28 @@
 .tr-active {
     background-color: khaki;
 }
+
+.contextmenu {
+    display: none;
+    position: absolute;
+    width: 80px;
+    background: white;
+    overflow: hidden;
+    z-index: 0;
+    list-style: none;
+    padding-inline-start: 0px;
+}
+
+.contextmenu li {
+    border-left: 3px solid transparent;
+    transition: ease 0.3s;
+    list-style: none;
+    text-align: center;
+    padding: 0.5rem 1rem;
+}
+
+.contextmenu li:hover {
+    background: #007bff;
+    border-left: 3px solid #343a40;
+    color: white;
+}
