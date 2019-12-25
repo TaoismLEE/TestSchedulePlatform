@@ -61,6 +61,7 @@ Task Report
         <th scope="col">BatchTime</th>
         <th scope="col">Method</th>
         <th scope="col">URL</th>
+        <th scope="col">API Alias</th>
         <th scope="col">Parameters</th>
         <th scope="col">CheckRegExp</th>
         <th scope="col">Result</th>
@@ -76,6 +77,11 @@ Task Report
                 <td>{{ history["BATCH_ID"] }}</td>
                 <td class="method">{{ history["METHODS"] }}</td>
                 <td class="url">{{ history["URL"] }}</td>
+                {% if history["ALIAS"] %}
+                    <td class="alias">{{ history["ALIAS"] }}</td>
+                {% else %}
+                    <td class="alias"></td>
+                {% endif %}
                 <td class="parameter">{{ history["PARAMETERS"] }}</td>
                 <td>{{ history["CHECK_REGEXP"] }}</td>
                 <td class="result">{{ history["CHECK_RESULT"] }}</td>

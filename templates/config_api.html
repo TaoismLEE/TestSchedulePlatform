@@ -40,6 +40,7 @@ Choose APIs
             <tr>
             <th><input type="checkbox" id="configured-total-check" /></th>
             <th scope="col">API</th>
+            <th scope="col">API Alias</th>
             <th scope="col">Project</th>
             </tr>
         </thead>
@@ -49,6 +50,7 @@ Choose APIs
                 <tr>
                     <td><input type="checkbox" rowindex={{ ns.counter }} /></td>
                     <td>{{ api["URL"] }}</td>
+                    <td>{{ api["ALIAS"] }}</td>
                     <td>{{ project["PROJECT_NAME"] }}</td>
                 </tr>
                 {% set ns.counter = ns.counter + 1 %}
@@ -68,6 +70,7 @@ Choose APIs
             <tr>
             <th><input type="checkbox" id="choosed-total-check" /></th>
             <th scope="col">API</th>
+            <th scope="col">API Alias</th>
             <th scope="col">Project</th>
             <th scope="col">LoginAPI</th>
             <th scope="col">NeededLogin</th>
@@ -79,6 +82,7 @@ Choose APIs
                 <tr>
                     <td><input type="checkbox" rowindex={{ ns.counter }} /></td>
                     <td>{{ api["URL"] }}</td>
+                    <td>{{ api["ALIAS"] }}</td>
                     <td>{{ project["PROJECT_NAME"] }}</td>
                     <td><span><input type="radio" name="apiType" value="{{ api['LOGIN_API'] }}" /></span></td>
                     <td><span><input type="checkbox" name="needLogin" value="{{ api['NEED_LOGIN'] }}" /></span></td>
