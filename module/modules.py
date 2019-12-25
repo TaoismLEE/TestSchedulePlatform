@@ -39,9 +39,10 @@ class Project(db.Model):
     DESCRIPTION = db.Column(db.String(150))
     OWNED_BY = db.Column(db.Integer, db.ForeignKey("users.ID"), nullable=False)
     VALID = db.Column(db.String(1))
+    IC_EMAIL = db.Column(db.String(1000))
     interfaces = db.relationship('Interface', backref='project')
 
-    def __init__(self, project_name, project_url, owned_by, project_logo="", incharger="", phone="", description="", valid="Y"):
+    def __init__(self, project_name, project_url, owned_by, project_logo="", incharger="", phone="", description="", valid="Y", email=""):
         self.PROJECT_LOGO = project_logo
         self.PROJECT_NAME = project_name
         self.PROJECT_URL = project_url
@@ -50,6 +51,7 @@ class Project(db.Model):
         self.DESCRIPTION = description
         self.OWNED_BY = owned_by
         self.VALID = valid
+        self.IC_EMAIL = email
 
 
 class Interface(db.Model):
@@ -132,14 +134,16 @@ class Batch(db.Model):
     BELONG_PROJECT = db.Column(db.Integer)
     LOGIN_API = db.Column(db.String(1))
     NEED_LOGIN = db.Column(db.String(1))
+    ALIAS = db.Column(db.String(255))
 
-    def __init__(self, methods, project_url, parameters, belong_task, belong_project, check_regexp):
+    def __init__(self, methods, project_url, parameters, belong_task, belong_project, check_regexp, alias):
         self.METHODS = methods
         self.URL = project_url
         self.PARAMETERS = parameters
         self.CHECK_REGEXP = check_regexp
         self.BELONG_TASK = belong_task
         self.BELONG_PROJECT = belong_project
+        self.ALIAS = alias
 
 
 class BatchHis(db.Model):
@@ -157,9 +161,10 @@ class BatchHis(db.Model):
     BELONG_PROJECT = db.Column(db.Integer)
     LOGIN_API = db.Column(db.String(1))
     NEED_LOGIN = db.Column(db.String(1))
+    ALIAS = db.Column(db.String(255))
 
     def __init__(self, batch_id, methods, project_url, parameters, api_return, check_regexp, check_result, execute_time,
-                 belong_task, belong_project, login_api, need_login):
+                 belong_task, belong_project, login_api, need_login, alias):
         self.BATCH_ID = batch_id
         self.METHODS = methods
         self.URL = project_url
@@ -172,3 +177,4 @@ class BatchHis(db.Model):
         self.BELONG_PROJECT = belong_project
         self.LOGIN_API = login_api
         self.NEED_LOGIN = need_login
+        self.ALIAS = alias

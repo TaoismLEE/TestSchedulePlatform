@@ -9,16 +9,27 @@ import time
 import pymysql
 from dateutil.parser import parse
 from service.url_generate import url_generate
+from service.parse_file import ParseYaml
 
+file_db = ParseYaml('db.yml')
+db_dict = file_db.get_yaml_dict()
+host = db_dict['host']
+user_name = db_dict['user']
+password = db_dict['password']
+
+file_email = ParseYaml('email.yml')
+email_dict = file_email.get_yaml_dict()
+sender = email_dict['sender']
+email_password = email_dict['password']
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@10.2.70.176:3306/tsp"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://" + str(user_name) + ":" + str(password) + "@" + str(host) + "/tsp"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JSON_AS_ASCII"] = False
 app.config['MAIL_SERVER'] = 'smtp.exmail.qq.com'
 app.config['MAIL_PORT'] = 25
-app.config['MAIL_USERNAME'] = 'yu.li@hualongdata.com'
-app.config['MAIL_PASSWORD'] = '2UCdZ79NgobbYTqe'
+app.config['MAIL_USERNAME'] = str(sender)
+app.config['MAIL_PASSWORD'] = str(email_password)
 
 db.init_app(app)
 scheduler = APScheduler()
@@ -68,12 +79,13 @@ def project_regist():
     phone = request.form.get("phone")
     owned_by = request.form.get("owned_by")
     project_url = request.form.get("project_url")
+    email = request.form.get("email")
 
     project = Project.query.filter(and_(Project.PROJECT_NAME == project_name, Project.VALID == "Y", Project.OWNED_BY == owned_by)).first()
     if project:
         return jsonify({"ErrMsg": "ProjectName registed, choose another one please!", "status": 400}), 400
     else:
-        insProject = Project(project_name=project_name, project_url=project_url, owned_by=owned_by, incharger=incharger, phone=phone, description=description)
+        insProject = Project(project_name=project_name, project_url=project_url, owned_by=owned_by, incharger=incharger, phone=phone, description=description, email=email)
         db.session.add(insProject)
         db.session.commit()
         return jsonify({"Message": "Regist project successfully!", "status": 200})
@@ -152,6 +164,7 @@ def project_edit():
         tmp["INCHARGER"] =project.INCHARGER
         tmp["PHONE"] = project.PHONE
         tmp["DESCRIPTION"] = project.DESCRIPTION
+        tmp["EMAIL"] = project.IC_EMAIL
         return jsonify({"data": tmp, "status": 200})
     else:
         return jsonify({"ErrMsg": "Project not found!", "status": 400}), 400
@@ -174,6 +187,7 @@ def project_edit_save():
     incharger = request.form.get("incharger")
     phone = request.form.get("phone")
     description = request.form.get("description")
+    email = request.form.get("email")
 
     project = Project.query.filter(Project.ID == project_id).first()
     project.PROJECT_NAME = project_name
@@ -181,6 +195,7 @@ def project_edit_save():
     project.INCHARGER = incharger
     project.PHONE = phone
     project.DESCRIPTION = description
+    project.IC_EMAIL = email
     db.session.commit()
     return jsonify({"Message": "Update project successfully!", "status": 200})
 
@@ -411,7 +426,7 @@ def schedule_task():
         app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', minute=minute, args=(task_id,))
     # schedule job per 5 seconds
     else:
-        app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', second='*/30', args=(task_id,))
+        app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', minute='*/30', args=(task_id,))
     # update status
     task.STATUS = 2
     db.session.commit()
@@ -424,7 +439,7 @@ def busi_func(task_id):
     login_method = ''
     login_parameter = ''
     request_cookie = '{}'
-    dbc = pymysql.connect(host="10.2.70.176", user="root", passwd="123456", db="tsp")
+    dbc = pymysql.connect(host="10.2.69.78", user="root", passwd="123456", db="tsp")
     cur = dbc.cursor()
     start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     sql_r = "update tasks set STATUS='" + str(3) + "'" + " WHERE ID=" + task_id
@@ -468,8 +483,8 @@ def busi_func(task_id):
         parameters = api[3]
         check_exp = api[4]
         login_flag = api[8]
-        loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie, login_method, login_url, login_parameter, batch_time, cur, project_id, task_id)
-    time.sleep(5)
+        alias = api[9]
+        loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie, login_method, login_url, login_parameter, batch_time, cur, project_id, task_id, alias)
     current_status = "select STATUS from tasks where ID=" + task_id
     dbc.commit()
     cur.execute(current_status)
@@ -501,11 +516,14 @@ def busi_func(task_id):
         cur.execute(project_url_sql)
         row = cur.fetchone()
         with app.app_context():
-            send_email(row[2] + " - API Test Report", 'email', result_rows, row)
+            emails = row[9]
+            if emails:
+                recipients = emails.split(',')
+                send_email(row[2] + " - API Test Report", 'email', result_rows, row, recipients)
 
 
-def send_email(subject, template, histories, project):
-    msg = Message(subject, sender='yu.li@hualongdata.com', recipients=['yu.li@hualongdata.com'])
+def send_email(subject, template, histories, project, recipients):
+    msg = Message(subject, sender=sender, recipients=recipients)
     msg.html = render_template(template + '.html', histories=histories, project=project)
     mail.send(msg)
 
@@ -524,7 +542,8 @@ def call_login_api(method, full_url, parameters, request_cookie):
             return str(cookies)
     elif method == "GET":
         if parameters:
-            response = requests.get(full_url, cookies=eval(request_cookie), params=parameters)
+            new_url = url_generate(full_url, eval(parameters))
+            response = requests.get(new_url, cookies=eval(request_cookie))
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
             return str(cookies)
         else:
@@ -535,7 +554,7 @@ def call_login_api(method, full_url, parameters, request_cookie):
         print("The method currently NOT supported!")
 
 
-def loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie, login_method, login_url, login_parameter, batch_time, cur, project_id, task_id):
+def loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie, login_method, login_url, login_parameter, batch_time, cur, project_id, task_id, alias):
     inner_cookie = '{}'
     if login_flag == "Y":
         inner_cookie = call_login_api(login_method, login_url, login_parameter, request_cookie)
@@ -549,23 +568,24 @@ def loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie
             response = requests.post(full_url, cookies=eval(inner_cookie))
     elif method == "GET":
         if parameters:
-            response = requests.get(full_url, cookies=eval(inner_cookie), params=parameters)
+            new_url = url_generate(full_url, eval(parameters))
+            response = requests.get(new_url, cookies=eval(inner_cookie))
         else:
             response = requests.get(full_url, cookies=eval(inner_cookie))
     else:
         print("The method currently NOT supported!")
     if check_exp:
         if re.search(check_exp, str(json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':')))):
-            tmp_sql = "insert into batches_his (BATCH_ID, METHODS, URL, PARAMETERS, API_RETURN, CHECK_REGEXP, CHECK_RESULT, BELONG_TASK, BELONG_PROJECT, EXECUTE_TIME) values ('" + batch_time + "','" + method + "','" + full_url + "','" + parameters + "','" + str(
-                                      json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))) + "','" + check_exp + "','" + "Pass" + "'," + str(task_id) + "," + str(project_id) + ",'" + inner_exe_time + "')"
+            tmp_sql = "insert into batches_his (BATCH_ID, METHODS, URL, PARAMETERS, API_RETURN, CHECK_REGEXP, CHECK_RESULT, BELONG_TASK, BELONG_PROJECT, EXECUTE_TIME, ALIAS) values ('" + batch_time + "','" + method + "','" + full_url + "','" + parameters + "','" + str(
+                                      json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))) + "','" + check_exp + "','" + "Pass" + "'," + str(task_id) + "," + str(project_id) + ",'" + inner_exe_time + "','" + alias + "')"
             cur.execute(tmp_sql)
         else:
-            tmp_sql = "insert into batches_his (BATCH_ID, METHODS, URL, PARAMETERS, API_RETURN, CHECK_REGEXP, CHECK_RESULT, BELONG_TASK, BELONG_PROJECT, EXECUTE_TIME) values ('" + batch_time + "','" + method + "','" + full_url + "','" + parameters + "','" + str(
-                                      json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))) + "','" + check_exp + "','" + "Fail" + "'," + str(task_id) + "," + str(project_id) + ",'" + inner_exe_time + "')"
+            tmp_sql = "insert into batches_his (BATCH_ID, METHODS, URL, PARAMETERS, API_RETURN, CHECK_REGEXP, CHECK_RESULT, BELONG_TASK, BELONG_PROJECT, EXECUTE_TIME, ALIAS) values ('" + batch_time + "','" + method + "','" + full_url + "','" + parameters + "','" + str(
+                                      json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))) + "','" + check_exp + "','" + "Fail" + "'," + str(task_id) + "," + str(project_id) + ",'" + inner_exe_time + "','" + alias + "')"
             cur.execute(tmp_sql)
     else:
-        tmp_sql = "insert into batches_his (BATCH_ID, METHODS, URL, PARAMETERS, API_RETURN, CHECK_REGEXP, CHECK_RESULT, BELONG_TASK, BELONG_PROJECT, EXECUTE_TIME) values ('" + batch_time + "','" + method + "','" + full_url + "','" + parameters + "','" + str(
-                                      json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))) + "','" + check_exp + "','" + "Skip" + "'," + str(task_id) + "," + str(project_id) + ",'" + inner_exe_time + "')"
+        tmp_sql = "insert into batches_his (BATCH_ID, METHODS, URL, PARAMETERS, API_RETURN, CHECK_REGEXP, CHECK_RESULT, BELONG_TASK, BELONG_PROJECT, EXECUTE_TIME, ALIAS) values ('" + batch_time + "','" + method + "','" + full_url + "','" + parameters + "','" + str(
+                                      json.dumps(response.json(), ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ':'))) + "','" + check_exp + "','" + "Skip" + "'," + str(task_id) + "," + str(project_id) + ",'" + inner_exe_time + "','" + alias + "')"
         cur.execute(tmp_sql)
 
 
@@ -628,7 +648,7 @@ def choose_api():
     api_list = api_arr.split(",")
     for i in api_list:
         api = Interface.query.filter(and_(Interface.BELONG_PROJECT == project_id, Interface.URL == i)).first()
-        tmp_api = Batch(api.METHODS, api.URL, api.PARAMETERS, task_id, api.BELONG_PROJECT, api.CHECK_REGEXP)
+        tmp_api = Batch(api.METHODS, api.URL, api.PARAMETERS, task_id, api.BELONG_PROJECT, api.CHECK_REGEXP, api.ALIAS)
         db.session.add(tmp_api)
     db.session.commit()
     return jsonify({"Message": "Choose APIs successfully!", "status": 200}), 200
@@ -680,6 +700,59 @@ def config_save():
                 api.NEED_LOGIN = ''
     db.session.commit()
     return jsonify({"Message": "Save config successfully!", "status": 200}), 200
+
+@app.before_first_request
+def re_schedule_task():
+    # fetch all tasks
+    tasks = Task.query.all()
+    for task in tasks:
+        task_id = str(task.ID)
+        task_status = task.STATUS
+        cron_exp = task.CRON_EXP
+        cron_list = cron_exp.split()
+        if task_status == '2' or task_status == '3':
+            # schedule week job
+            if cron_list[-1] != '*':
+                if cron_list[-1] == '0':
+                    day_of_week = 6
+                else:
+                    day_of_week = int(cron_list[-1]) - 1
+                hour = int(cron_list[1])
+                minute = int(cron_list[0])
+                app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', day_of_week=day_of_week, hour=hour,
+                                        minute=minute, args=(task_id,))
+            # schedule year job
+            elif cron_list[-1] == '*' and cron_list[-2] != '*':
+                month = int(cron_list[-2])
+                day = int(cron_list[2])
+                hour = int(cron_list[1])
+                minute = int(cron_list[0])
+                app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', month=month, day=day, hour=hour,
+                                        minute=minute, args=(task_id,))
+            # schedule month job
+            elif cron_list[-1] == '*' and cron_list[-2] == '*' and cron_list[-3] != '*':
+                day = int(cron_list[2])
+                hour = int(cron_list[1])
+                minute = int(cron_list[0])
+                app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', day=day, hour=hour, minute=minute,
+                                        args=(task_id,))
+            # schedule day job
+            elif cron_list[-1] == '*' and cron_list[-2] == '*' and cron_list[-3] == '*' and cron_list[-4] != '*':
+                hour = int(cron_list[1])
+                minute = int(cron_list[0])
+                app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', hour=hour, minute=minute,
+                                        args=(task_id,))
+            # schedule hour job
+            elif cron_list[-1] == '*' and cron_list[-2] == '*' and cron_list[-3] == '*' and cron_list[-4] == '*' and \
+                    cron_list[-5] != '*':
+                minute = int(cron_list[0])
+                app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', minute=minute, args=(task_id,))
+            # schedule job per 5 seconds
+            else:
+                app.apscheduler.add_job(id=task_id, func=busi_func, trigger='cron', minute='*/30', args=(task_id,))
+            # update status
+            task.STATUS = 2
+            db.session.commit()
 
 
 if __name__ == '__main__':

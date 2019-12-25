@@ -12,6 +12,7 @@ $(document).ready(function(){
         $("#txt_incharger").val("");
         $("#text_phone").val("");
         $("#txt_description").val("");
+        $("#txt_email").val("");
         //$("#pic_logo").val("");
     });
 
@@ -24,6 +25,7 @@ $(document).ready(function(){
             const incharger = $("#txt_incharger").val();
             const phone = $("#text_phone").val();
             const description = $("#txt_description").val();
+            const email = $("#txt_email").val();
             //const logo = $("#pic_logo").val();
             const owned_by = localStorage.getItem("user_id");
             if (projectname == "" | project_url == "") {
@@ -58,6 +60,7 @@ $(document).ready(function(){
             //paras.append("logo", logo);
             paras.append("phone", phone);
             paras.append("owned_by", owned_by);
+            paras.append("email", email);
             request.send(paras);
         }
         else  if ($("#myModalLabel").text() == "Edit Project"){
@@ -67,6 +70,7 @@ $(document).ready(function(){
             const incharger = $("#txt_incharger").val();
             const phone = $("#text_phone").val();
             const description = $("#txt_description").val();
+            const email = $("#txt_email").val();
             //const logo = $("#pic_logo").val();
             const project_id = localStorage.getItem("project_id");
             if (projectname == "" | project_url == "") {
@@ -101,6 +105,7 @@ $(document).ready(function(){
             //paras.append("logo", logo);
             paras.append("phone", phone);
             paras.append("project_id", project_id);
+            paras.append("email", email);
             request.send(paras);
         }
     });
@@ -261,6 +266,7 @@ $(document).ready(function(){
                         $("#txt_project_name").val(result.data.PROJECT_NAME);
                         $("#txt_project_url").val(result.data.PROJECT_URL);
                         $("#txt_incharger").val(result.data.INCHARGER);
+                        $("#txt_email").val(result.data.EMAIL);
                         $("#text_phone").val(result.data.PHONE);
                         $("#txt_description").val(result.data.DESCRIPTION);
 
