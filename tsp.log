@@ -1,0 +1,28 @@
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+/home/haishu/TestSchedulePlatform/service/parse_file.py:11: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  data_dict = yaml.load(f.read())
+ * Running on http://192.168.32.135:5000/ (Press CTRL+C to quit)
+172.16.23.22 - - [27/Jan/2021 14:25:37] "GET / HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:25:44] "POST /signin HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:25:44] "GET /project/20 HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:25:48] "GET /interface/20 HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:25:51] "POST /interface/detail HTTP/1.1" 200 -
+/home/haishu/TestSchedulePlatform/venv/lib64/python3.6/site-packages/urllib3/connectionpool.py:1004: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  InsecureRequestWarning,
+172.16.23.22 - - [27/Jan/2021 14:26:08] "POST /api/query HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:26:09] "POST /interface/query HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:27:50] "GET /tasks/20 HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:27:50] "GET /static/css/task.css HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:27:53] "GET /static/js/task.js HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:28:15] "GET /his_report/26/1 HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:28:15] "GET /static/css/his_report.css HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:28:15] "GET /static/js/his_report.js HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:28:45] "POST /cancel/task HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:28:48] "GET /tasks/20 HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:29:36] "POST /task/edit/save HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:29:38] "GET /tasks/20 HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:29:44] "POST /schedule/task HTTP/1.1" 200 -
+172.16.23.22 - - [27/Jan/2021 14:29:46] "GET /tasks/20 HTTP/1.1" 200 -

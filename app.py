@@ -272,10 +272,10 @@ def query_apis():
     elif method == "GET":
         if parameters:
             new_url = url_generate(full_url, eval(parameters))
-            response = requests.get(new_url, cookies=eval(request_cookie))
+            response = requests.get(new_url, cookies=eval(request_cookie), verify=False)
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
         else:
-            response = requests.get(full_url, cookies=eval(request_cookie))
+            response = requests.get(full_url, cookies=eval(request_cookie), verify=False)
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
     else:
         print("The method currently NOT supported!")
@@ -537,17 +537,17 @@ def call_login_api(method, full_url, parameters, request_cookie):
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
             return str(cookies)
         else:
-            response = requests.post(full_url, cookies=eval(request_cookie))
+            response = requests.post(full_url, cookies=eval(request_cookie), verify=False)
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
             return str(cookies)
     elif method == "GET":
         if parameters:
             new_url = url_generate(full_url, eval(parameters))
-            response = requests.get(new_url, cookies=eval(request_cookie))
+            response = requests.get(new_url, cookies=eval(request_cookie), verify=False)
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
             return str(cookies)
         else:
-            response = requests.get(full_url, cookies=eval(request_cookie))
+            response = requests.get(full_url, cookies=eval(request_cookie), verify=False)
             cookies = requests.utils.dict_from_cookiejar(response.cookies)
             return str(cookies)
     else:
@@ -565,13 +565,13 @@ def loop_api(method, full_url, parameters, check_exp, login_flag, request_cookie
         if parameters:
             response = requests.post(full_url, data=data_json, cookies=eval(inner_cookie), verify=False)
         else:
-            response = requests.post(full_url, cookies=eval(inner_cookie))
+            response = requests.post(full_url, cookies=eval(inner_cookie), verify=False)
     elif method == "GET":
         if parameters:
             new_url = url_generate(full_url, eval(parameters))
-            response = requests.get(new_url, cookies=eval(inner_cookie))
+            response = requests.get(new_url, cookies=eval(inner_cookie), verify=False)
         else:
-            response = requests.get(full_url, cookies=eval(inner_cookie))
+            response = requests.get(full_url, cookies=eval(inner_cookie), verify=False)
     else:
         print("The method currently NOT supported!")
     if check_exp:
